@@ -13,10 +13,11 @@ from typing import Dict, List, Optional, Any
 from threading import Thread
 import schedule
 
-from .model_manager import ModelManager
-from .inference_engine import InferenceEngine, InferenceRequest
-from .training_engine import TrainingEngine, TrainingRequest, DataGenerator
-from .scheduler import TaskScheduler, TaskPriority, ResourceRequirement
+# 修正：改為同一層目錄的導入
+from model_manager import ModelManager
+from inference_engine import InferenceEngine, InferenceRequest
+from training_engine import TrainingEngine, TrainingRequest, DataGenerator
+from task_scheduler import TaskScheduler, TaskPriority, ResourceRequirement
 
 logger = logging.getLogger(__name__)
 
@@ -378,6 +379,53 @@ class AITrainingAgent:
         except Exception as e:
             logger.error(f"Error during shutdown: {e}")
 
+# 便利函數和測試
+def create_ai_training_agent(model_dir: str = "models", max_concurrent_tasks: int = 10) -> AITrainingAgent:
+    """Create and return an AITrainingAgent instance"""
+    return AITrainingAgent(model_dir=model_dir, max_concurrent_tasks=max_concurrent_tasks)
+
+async def test_ai_training_agent():
+    """Test function for AITrainingAgent"""
+    print("🧪 Testing AITrainingAgent...")
+    
+    try:
+        # Initialize agent
+        agent = AITrainingAgent(model_dir="./test_models")
+        print("✅ AITrainingAgent initialized")
+        
+        # Test quick inference
+        sample_texts = [
+            "Urgent: Verify your account now!",
+            "Meeting scheduled for tomorrow"
+        ]
+        
+        result = await agent.quick_inference(sample_texts)
+        print(f"✅ Quick inference completed: {result['predictions']}")
+        
+        # Test system status
+        status = agent.get_system_status()
+        print(f"✅ System status: {len(status['models'])} models available")
+        
+        # Test sample data creation
+        data_path = agent.create_sample_training_data(10)
+        print(f"✅ Sample data created: {data_path}")
+        
+        # Test training statistics
+        stats = agent.get_training_statistics(data_path)
+        print(f"✅ Training statistics: {stats['total_samples']} samples")
+        
+        # Shutdown
+        agent.shutdown()
+        print("✅ Agent shutdown complete")
+        
+        return True
+        
+    except Exception as e:
+        print(f"❌ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
+
 # Usage example and helper functions
 async def example_usage():
     """Example usage of the AI Training Agent"""
@@ -424,7 +472,8 @@ async def example_usage():
         await asyncio.sleep(10)
         
         # Check task status
-        print(f"\n📈 Training task status: {agent.get_task_status(training_task_id)}")
+        task_status = agent.get_task_status(training_task_id)
+        print(f"\n📈 Training task status: {task_status}")
         
         # Example 5: Generate performance report
         print("\n📊 Performance report:")
@@ -438,5 +487,10 @@ async def example_usage():
         print("\n🏁 Agent shutdown complete")
 
 if __name__ == "__main__":
-    # Run example
-    asyncio.run(example_usage())
+    # Run example or test
+    import sys
+    
+    if len(sys.argv) > 1 and sys.argv[1] == "test":
+        asyncio.run(test_ai_training_agent())
+    else:
+        asyncio.run(example_usage())
