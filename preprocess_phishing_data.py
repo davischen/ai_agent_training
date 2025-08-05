@@ -132,12 +132,40 @@ def evaluate_model(model, test_emails, test_labels):
 
 def calculate_performance_metrics(test_labels, query_id_to_ranked_doc_ids):
     """
-    Calculate performance metrics
+    Calculate performance metrics including MAP
     """
     from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+    import numpy as np
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+    
+    def average_precision(relevant_docs, candidate_docs):
+        """
+        Compute the Average Precision (AP) for a single query.
+        """
+        y_true = [1 if doc_id in relevant_docs else 0 for doc_id in candidate_docs]
+        precisions = [np.mean(y_true[:k+1]) for k in range(len(y_true)) if y_true[k]]
+        return np.mean(precisions) if precisions else 0
+
+    def mean_average_precision(true_labels, query_id_to_ranked_doc_ids, top_k=10):
+        """
+        Compute the Mean Average Precision (MAP) for the entire dataset.
+        """
+        average_precisions = []
+
+        for query_id, ranked_docs in query_id_to_ranked_doc_ids.items():
+            relevant_docs = [i for i, label in enumerate(true_labels) if label == true_labels[query_id]]  # Find correct class
+            ap = average_precision(relevant_docs, ranked_docs[:top_k])  # Compute AP for top_k results
+            average_precisions.append(ap)
+
+        return np.mean(average_precisions)
+    
+    # Calculate MAP score
+    map_score = mean_average_precision(test_labels, query_id_to_ranked_doc_ids)
+    print("Mean Average Precision (MAP):", map_score)
     
     # Simple prediction based on top-1 ranking
-    y_pred = [test_labels[query_id_to_ranked_doc_ids[i][0]] for i in range(len(test_labels))]
+    y_pred = [test_labels[query_id_to_ranked_doc_ids[i][0]] for i in range(len(test_labels))]  # Predict top-1 match
     
     print("\nClassification Report:")
     print(classification_report(test_labels, y_pred))
@@ -146,10 +174,25 @@ def calculate_performance_metrics(test_labels, query_id_to_ranked_doc_ids):
     print("\nConfusion Matrix:")
     print(conf_matrix)
     
+    # Plot confusion matrix
+    try:
+        plt.figure(figsize=(6, 5))
+        sns.heatmap(conf_matrix, annot=True, fmt="d", cmap="Blues", 
+                   xticklabels=["Safe Email", "Phishing Email"], 
+                   yticklabels=["Safe Email", "Phishing Email"])
+        plt.xlabel("Predicted Label")
+        plt.ylabel("True Label")
+        plt.title("Confusion Matrix for Phishing Email Detection")
+        plt.show()
+    except Exception as e:
+        print(f"Could not display plot: {e}")
+        print("Install matplotlib and seaborn for visualization: pip install matplotlib seaborn")
+    
     accuracy = accuracy_score(test_labels, y_pred)
     print(f"\nAccuracy: {accuracy:.4f}")
+    print(f"MAP Score: {map_score:.4f}")
     
-    return y_pred, conf_matrix, accuracy
+    return y_pred, conf_matrix, accuracy, map_score
 
 def analyze_misclassified_examples(test_emails, test_labels, y_pred, max_examples=10):
     """
@@ -207,7 +250,7 @@ def complete_pipeline(csv_file_path: str = "Phishing_Email.csv",
         
         # Step 6: Calculate metrics
         print("\n📊 Step 6: Calculating performance metrics...")
-        y_pred, conf_matrix, accuracy = calculate_performance_metrics(test_labels, query_rankings)
+        y_pred, conf_matrix, accuracy, map_score = calculate_performance_metrics(test_labels, query_rankings)
         
         # Step 7: Analyze misclassified examples
         print("\n🔍 Step 7: Analyzing misclassified examples...")
@@ -215,6 +258,7 @@ def complete_pipeline(csv_file_path: str = "Phishing_Email.csv",
         
         print("\n🎉 Pipeline completed successfully!")
         print(f"Final accuracy: {accuracy:.4f}")
+        print(f"MAP score: {map_score:.4f}")
         print(f"Model saved to: {output_model_path}")
         
         return {
@@ -223,6 +267,7 @@ def complete_pipeline(csv_file_path: str = "Phishing_Email.csv",
             'test_data': (test_emails, test_labels),
             'predictions': y_pred,
             'accuracy': accuracy,
+            'map_score': map_score,
             'confusion_matrix': conf_matrix
         }
         
