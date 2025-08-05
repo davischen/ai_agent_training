@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-ATLAS Agent Main Execution Script
+ATLAS Agent Main Execution Script (Adapted for same-level directory structure)
 Run the AI Training Agent with automatic execution capabilities
 """
 
@@ -13,16 +13,12 @@ import json
 import argparse
 from pathlib import Path
 
-# Add project root to Python path
-project_root = Path(__file__).parent
-sys.path.insert(0, str(project_root))
-
-from atlas.core.ai_training_agent import AITrainingAgent
-from atlas.core.auto_execution import AutomaticTrainingOrchestrator
+# 修改：同一層目錄導入
+from ai_training_agent import AITrainingAgent
 
 def setup_logging(log_level: str = "INFO"):
     """Setup logging configuration"""
-    log_dir = project_root / "atlas" / "logs"
+    log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     
     logging.basicConfig(
@@ -36,15 +32,29 @@ def setup_logging(log_level: str = "INFO"):
 
 def load_config(config_path: str) -> dict:
     """Load configuration from JSON file"""
-    with open(config_path, 'r', encoding='utf-8') as f:
-        return json.load(f)
+    try:
+        with open(config_path, 'r', encoding='utf-8') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        # 返回默認配置
+        return {
+            'system': {
+                'model_dir': './models',
+                'max_concurrent_tasks': 5,
+                'log_level': 'INFO'
+            },
+            'training': {
+                'epochs': 3,
+                'batch_size': 16
+            }
+        }
 
 async def run_basic_agent():
     """Run basic AI Training Agent"""
     print("🚀 Starting ATLAS Agent in Basic Mode...")
     
-    config_path = project_root / "atlas" / "config" / "default_config.json"
-    config = load_config(config_path)
+    # 使用默認配置或從文件載入
+    config = load_config('config.json')
     
     # Initialize agent
     agent = AITrainingAgent(
@@ -53,136 +63,228 @@ async def run_basic_agent():
     
     print("✅ ATLAS Agent initialized successfully!")
     
-    # Example inference
-    sample_emails = [
-        "Urgent: Your account will be suspended unless you verify immediately!",
-        "Hi team, please find the quarterly report attached for your review.",
-        "WINNER! You've won $1,000,000! Click here to claim your prize now!"
-    ]
-    
-    print("\n📧 Processing sample emails...")
-    
-    # Create inference request
-    inference_request = agent.generate_inference_request(
-        text_data=sample_emails,
-        return_embeddings=False,
-        threshold=0.5
-    )
-    
-    # Submit and wait for results
-    task_id = await agent.submit_inference_request(inference_request)
-    print(f"📋 Inference task submitted: {task_id}")
-    
-    # Monitor task
-    for i in range(30):  # Wait up to 30 seconds
-        await asyncio.sleep(1)
-        status = agent.get_task_status(task_id)
-        if status and status.status.value in ['completed', 'failed']:
-            break
-    
-    final_status = agent.get_task_status(task_id)
-    if final_status and final_status.result:
+    try:
+        # Example inference
+        sample_emails = [
+            "Urgent: Your account will be suspended unless you verify immediately!",
+            "Hi team, please find the quarterly report attached for your review.",
+            "WINNER! You've won $1,000,000! Click here to claim your prize now!"
+        ]
+        
+        print("\n📧 Processing sample emails...")
+        
+        # Quick inference test
+        result = await agent.quick_inference(sample_emails)
+        
         print("\n📊 Inference Results:")
-        for i, (email, prediction) in enumerate(zip(sample_emails, final_status.result.get('predictions', []))):
+        for i, (email, prediction) in enumerate(zip(sample_emails, result.get('predictions', []))):
             label = "🚨 PHISHING" if prediction == 1 else "✅ SAFE"
-            print(f"  {i+1}. {label} - {email[:50]}...")
+            confidence = result.get('confidences', [0])[i] if i < len(result.get('confidences', [])) else 0
+            print(f"  {i+1}. {label} (confidence: {confidence:.2f}) - {email[:50]}...")
+        
+        # Test system status
+        print("\n📋 System Status:")
+        status = agent.get_system_status()
+        print(f"Available models: {list(status.get('models', {}).keys())}")
+        
+        # Test sample data creation
+        print("\n📝 Creating sample training data...")
+        data_path = agent.create_sample_training_data(num_samples=20)
+        print(f"Sample data created: {data_path}")
+        
+        # Test training data statistics
+        stats = agent.get_training_statistics(data_path)
+        print(f"Training data stats: {stats}")
+        
+    except Exception as e:
+        print(f"❌ Error during demo: {e}")
+        import traceback
+        traceback.print_exc()
     
-    # Graceful shutdown
-    agent.shutdown()
-    print("\n🏁 ATLAS Agent stopped.")
+    finally:
+        # Graceful shutdown
+        agent.shutdown()
+        print("\n🏁 ATLAS Agent stopped.")
 
-async def run_auto_training_agent():
-    """Run automatic training agent"""
-    print("🤖 Starting ATLAS Agent in Automatic Training Mode...")
+async def run_training_demo():
+    """Run training demonstration"""
+    print("🎓 Starting ATLAS Agent Training Demo...")
     
-    config_path = project_root / "atlas" / "config" / "default_config.json"
-    config = load_config(config_path)
+    config = load_config('config.json')
     
-    # Initialize automatic training orchestrator
-    orchestrator = AutomaticTrainingOrchestrator(config)
+    # Initialize agent
+    agent = AITrainingAgent(model_dir=config['system']['model_dir'])
     
-    print("✅ Automatic Training Orchestrator initialized!")
-    print("📡 Starting monitoring for automatic training triggers...")
-    print("⏰ Monitoring schedule:")
-    print("  - Data collection: Every 10 minutes")
-    print("  - Training triggers: Every 30 minutes")
-    print("  - Daily training: 02:00 AM")
-    print("\n📝 Press Ctrl+C to stop...\n")
+    print("✅ ATLAS Agent initialized for training!")
     
     try:
-        # Start monitoring
-        await orchestrator.start_monitoring()
-    except KeyboardInterrupt:
-        print("\n🛑 Stopping automatic training...")
-        orchestrator.stop_monitoring()
-        print("🏁 ATLAS Agent stopped.")
+        # Create sample training data
+        print("\n📝 Creating sample training data...")
+        data_path = agent.create_sample_training_data(num_samples=100)
+        
+        # Start training
+        print(f"\n🎓 Starting model training with data from: {data_path}")
+        training_task_id = await agent.train_model_from_data(
+            data_path=data_path,
+            training_params={'epochs': 2, 'batch_size': 8}  # Small for demo
+        )
+        
+        print(f"📋 Training task submitted: {training_task_id}")
+        
+        # Monitor training progress
+        print("\n⏳ Monitoring training progress...")
+        for i in range(60):  # Wait up to 60 seconds
+            await asyncio.sleep(1)
+            status = agent.get_task_status(training_task_id)
+            if status and hasattr(status, 'status'):
+                print(f"  Status: {status.status}", end='\r')
+                if status.status.value in ['completed', 'failed']:
+                    break
+        
+        # Get final results
+        final_status = agent.get_task_status(training_task_id)
+        if final_status:
+            print(f"\n📊 Training completed with status: {final_status.status}")
+            if final_status.result:
+                print(f"📈 Training results: {final_status.result}")
+        
+    except Exception as e:
+        print(f"❌ Training demo failed: {e}")
+        import traceback
+        traceback.print_exc()
+    
+    finally:
+        agent.shutdown()
+        print("\n🏁 Training demo completed.")
+
+def run_simple_test():
+    """Run simple synchronous test"""
+    print("🧪 Running Simple ATLAS Agent Test...")
+    
+    try:
+        # Test basic imports
+        from model_manager import ModelManager
+        from inference_engine import InferenceEngine
+        from training_engine import TrainingEngine
+        print("✅ All modules imported successfully")
+        
+        # Test model manager
+        mm = ModelManager("./test_models")
+        print("✅ ModelManager created")
+        
+        # Test inference engine
+        ie = InferenceEngine(mm)
+        print("✅ InferenceEngine created")
+        
+        # Test training engine
+        te = TrainingEngine(mm)
+        print("✅ TrainingEngine created")
+        
+        # Test sample data generation
+        sample_data = te.data_generator.generate_synthetic_emails(10)
+        print(f"✅ Generated {len(sample_data)} sample emails")
+        
+        print("\n🎉 All basic tests passed!")
+        return True
+        
+    except Exception as e:
+        print(f"❌ Test failed: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
 
 def initialize_data_structure():
     """Initialize data directory structure"""
     print("🏗️  Initializing ATLAS Agent data structure...")
     
     directories = [
-        "atlas/data/raw/emails",
-        "atlas/data/raw/threat_intel", 
-        "atlas/data/raw/user_feedback",
-        "atlas/data/processed",
-        "atlas/models/base_models",
-        "atlas/models/trained_models",
-        "atlas/logs",
-        "atlas/config"
+        "data/raw",
+        "data/processed",
+        "models/base_models", 
+        "models/trained_models",
+        "logs",
+        "config"
     ]
     
     for directory in directories:
-        path = project_root / directory
+        path = Path(directory)
         path.mkdir(parents=True, exist_ok=True)
         print(f"  ✅ Created: {directory}")
     
-    # Create sample config if not exists
-    config_path = project_root / "atlas" / "config" / "default_config.json"
+    # Create sample config
+    config_path = Path("config.json")
     if not config_path.exists():
         print("  📝 Creating default configuration...")
-        # Config creation logic would go here
+        default_config = {
+            "system": {
+                "model_dir": "./models",
+                "max_concurrent_tasks": 5,
+                "log_level": "INFO"
+            },
+            "training": {
+                "epochs": 3,
+                "batch_size": 16,
+                "learning_rate": 2e-5
+            },
+            "inference": {
+                "batch_size": 32,
+                "threshold": 0.5
+            }
+        }
+        
+        with open(config_path, 'w', encoding='utf-8') as f:
+            json.dump(default_config, f, indent=2)
+        
+        print(f"  ✅ Created configuration file: {config_path}")
     
     print("🎉 Data structure initialized successfully!")
 
-def load_initial_data():
-    """Load initial training data"""
-    print("📥 Loading initial training data...")
+def create_sample_data():
+    """Create sample training data"""
+    print("📝 Creating sample training data...")
     
-    # Check for initial data file
-    initial_data_path = project_root / "atlas" / "data" / "raw" / "initial_training_data.csv"
+    sample_data = {
+        'Email Text': [
+            "URGENT: Your account will be suspended unless you verify immediately!",
+            "Hi team, please find the quarterly financial report attached for your review.",
+            "WINNER! You've won $1,000,000! Click here to claim your prize now!",
+            "Meeting reminder: Our weekly team sync is scheduled for tomorrow at 2 PM.",
+            "Your PayPal account has been limited. Verify your identity to restore access.",
+            "Thank you for your purchase. Your order #12345 has been shipped.",
+            "SECURITY ALERT: Suspicious login detected. Confirm your identity immediately.",
+            "Project update: The new feature development is on track for next week's release."
+        ],
+        'Email Type': [
+            'Phishing Email', 'Safe Email', 'Phishing Email', 'Safe Email',
+            'Phishing Email', 'Safe Email', 'Phishing Email', 'Safe Email'
+        ]
+    }
     
-    if not initial_data_path.exists():
-        print("⚠️  No initial training data found.")
-        print("💡 Please create 'atlas/data/raw/initial_training_data.csv' with your training data.")
-        print("   Format: Email Text, Email Type")
-        return False
+    import pandas as pd
+    df = pd.DataFrame(sample_data)
     
-    try:
-        import pandas as pd
-        df = pd.read_csv(initial_data_path)
-        print(f"  ✅ Loaded {len(df)} initial training samples")
-        
-        # Process and store data (simplified)
-        # In real implementation, this would use DataSourceManager
-        
-        return True
-    except Exception as e:
-        print(f"❌ Error loading initial data: {e}")
-        return False
+    # Save to data directory
+    data_dir = Path("data/raw")
+    data_dir.mkdir(parents=True, exist_ok=True)
+    
+    sample_file = data_dir / "sample_training_data.csv"
+    df.to_csv(sample_file, index=False)
+    
+    print(f"✅ Sample data created: {sample_file}")
+    print(f"📊 Created {len(df)} samples ({sum(df['Email Type'] == 'Phishing Email')} phishing, {sum(df['Email Type'] == 'Safe Email')} safe)")
 
 def main():
     """Main execution function"""
     parser = argparse.ArgumentParser(description="ATLAS AI Training Agent")
     parser.add_argument(
         '--mode', 
-        choices=['basic', 'auto', 'init'], 
+        choices=['basic', 'training', 'test', 'init'], 
         default='basic',
-        help='Execution mode: basic (manual), auto (automatic), init (initialize)'
+        help='Execution mode: basic (inference demo), training (training demo), test (simple test), init (initialize)'
     )
     parser.add_argument(
         '--config', 
-        default='atlas/config/default_config.json',
+        default='config.json',
         help='Configuration file path'
     )
     parser.add_argument(
@@ -202,13 +304,19 @@ def main():
     
     if args.mode == 'init':
         initialize_data_structure()
-        load_initial_data()
+        create_sample_data()
+        
+    elif args.mode == 'test':
+        success = run_simple_test()
+        if success:
+            print("\n✅ Ready to run ATLAS Agent!")
+            print("Try: python run_agent.py --mode basic")
         
     elif args.mode == 'basic':
         asyncio.run(run_basic_agent())
         
-    elif args.mode == 'auto':
-        asyncio.run(run_auto_training_agent())
+    elif args.mode == 'training':
+        asyncio.run(run_training_demo())
 
 if __name__ == "__main__":
     main()
