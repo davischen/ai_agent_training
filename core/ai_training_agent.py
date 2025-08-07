@@ -11,13 +11,13 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from threading import Thread
-import task_scheduler
-
+import core.task_scheduler as task_scheduler
+from pii_trainer import create_pii_trainer, quick_train_pii
 # 修正：改為同一層目錄的導入
-from model_manager import ModelManager
-from inference_engine import InferenceEngine, InferenceRequest
-from training_engine import TrainingEngine, TrainingRequest, DataGenerator
-from task_scheduler import TaskScheduler, TaskPriority, ResourceRequirement
+from core.model_manager import ModelManager
+from core.inference_engine import InferenceEngine, InferenceRequest
+from core.training_engine import TrainingEngine, TrainingRequest, DataGenerator
+from core.task_scheduler import TaskScheduler, TaskPriority, ResourceRequirement
 
 logger = logging.getLogger(__name__)
 
@@ -230,6 +230,11 @@ class AITrainingAgent:
         except Exception as e:
             logger.error(f"Failed to create sample training data: {e}")
             raise
+        
+    async def train_pii_model(self, **training_params):
+        """訓練PII識別模型"""
+        trainer = create_pii_trainer()
+        return trainer.train(**training_params)
     
     async def train_model_from_data(self, data_path: str, 
                                   model_config: Dict[str, Any] = None,

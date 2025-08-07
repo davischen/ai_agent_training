@@ -40,8 +40,8 @@ def check_dependencies():
 def check_atlas_components():
     """Check if ATLAS components are available"""
     try:
-        from ai_training_agent import AITrainingAgent
-        from model_manager import ModelManager
+        from core.ai_training_agent import AITrainingAgent
+        from core.model_manager import ModelManager
         print("✅ ATLAS components found")
         return True
     except ImportError as e:

@@ -11,7 +11,7 @@ from dataclasses import dataclass
 from datetime import datetime
 
 # 修改：改為同一層目錄的導入
-from model_manager import ModelManager
+from core.model_manager import ModelManager
 
 logger = logging.getLogger(__name__)
 
@@ -383,7 +383,7 @@ class InferenceMethod:
             logger.error(f"Advanced inference failed: {e}")
             raise
     """Quick inference function for standalone use"""
-    from model_manager import ModelManager
+    from core.model_manager import ModelManager
     
     # Create temporary model manager and inference engine
     model_manager = ModelManager("./models")
@@ -391,7 +391,7 @@ class InferenceMethod:
     
     # Perform batch inference
     result = inference_engine.batch_inference(text_list, model_name)
-    return result
+    result
 
 # 新增：簡單的測試函數
 def test_inference_engine():

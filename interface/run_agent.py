@@ -14,7 +14,7 @@ import argparse
 from pathlib import Path
 
 # 修改：同一層目錄導入
-from ai_training_agent import AITrainingAgent
+from core.ai_training_agent import AITrainingAgent
 
 def setup_logging(log_level: str = "INFO"):
     """Setup logging configuration"""
@@ -163,9 +163,9 @@ def run_simple_test():
     
     try:
         # Test basic imports
-        from model_manager import ModelManager
-        from inference_engine import InferenceEngine
-        from training_engine import TrainingEngine
+        from core.model_manager import ModelManager
+        from core.inference_engine import InferenceEngine
+        from core.training_engine import TrainingEngine
         print("✅ All modules imported successfully")
         
         # Test model manager

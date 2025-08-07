@@ -23,10 +23,10 @@ logging.basicConfig(level=logging.WARNING)
 
 # Import ATLAS components
 try:
-    from ai_training_agent import AITrainingAgent
-    from model_manager import ModelManager
-    from inference_engine import InferenceEngine
-    from training_engine import TrainingEngine
+    from core.ai_training_agent import AITrainingAgent
+    from core.model_manager import ModelManager
+    from core.inference_engine import InferenceEngine
+    from core.training_engine import TrainingEngine
     ATLAS_AVAILABLE = True
 except ImportError as e:
     st.error(f"Failed to import ATLAS components: {e}")

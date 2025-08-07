@@ -20,7 +20,7 @@ from torch.utils.data import DataLoader
 import torch
 
 # 同一層目錄導入
-from model_manager import ModelManager
+from core.model_manager import ModelManager
 
 logger = logging.getLogger(__name__)
 
@@ -377,7 +377,7 @@ class TrainingEngine:
 def create_unified_training_engine(model_manager: ModelManager = None) -> TrainingEngine:
     """Create TrainingEngine with unified methodology"""
     if model_manager is None:
-        from model_manager import ModelManager
+        from core.model_manager import ModelManager
         model_manager = ModelManager()
     return TrainingEngine(model_manager)
 
@@ -386,7 +386,7 @@ async def test_unified_training():
     print("🧪 Testing Unified Training Engine...")
     
     try:
-        from model_manager import ModelManager
+        from core.model_manager import ModelManager
         
         # Create components
         mm = ModelManager("./test_models")
