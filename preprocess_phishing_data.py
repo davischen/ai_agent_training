@@ -324,7 +324,7 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
     
     # Create sample data if needed
-    create_sample_data_if_needed()
+    #create_sample_data_if_needed()
     
     # Run the complete pipeline
     result = complete_pipeline(

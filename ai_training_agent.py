@@ -11,7 +11,7 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 from threading import Thread
-import schedule
+import task_scheduler
 
 # 修正：改為同一層目錄的導入
 from model_manager import ModelManager
@@ -43,10 +43,10 @@ class AITrainingAgent:
     def _setup_periodic_tasks(self):
         """Setup periodic maintenance and monitoring tasks"""
         # Schedule daily maintenance at 2:00 AM
-        schedule.every().day.at("02:00").do(self._daily_maintenance)
+        task_scheduler.every().day.at("02:00").do(self._daily_maintenance)
         
         # Schedule hourly health checks
-        schedule.every().hour.do(self._hourly_health_check)
+        task_scheduler.every().hour.do(self._hourly_health_check)
         
         # Start schedule runner thread
         schedule_thread = Thread(target=self._run_schedule, daemon=True)
@@ -56,7 +56,7 @@ class AITrainingAgent:
         """Run periodic scheduled tasks"""
         while True:
             try:
-                schedule.run_pending()
+                task_scheduler.run_pending()
                 import time
                 time.sleep(60)  # Check every minute
             except Exception as e:
@@ -372,7 +372,7 @@ class AITrainingAgent:
             self.scheduler.stop(wait_for_completion=wait_for_completion, timeout=timeout)
             
             # Clear scheduled tasks
-            schedule.clear()
+            task_scheduler.clear()
             
             logger.info("ATLAS AI Training Agent shutdown complete")
             
