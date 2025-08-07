@@ -1,408 +1,113 @@
-================================================================================
-ATLAS - Adaptive Training and Learning Automation System
-================================================================================
+# ATLAS System Documentation
 
-Version: 1.0.0
-Last Updated: August 2025
-License: MIT License
+**Adaptive Training and Learning Automation System**  
+*Version 1.0.0 | August 2025*
 
-================================================================================
-OVERVIEW
-================================================================================
+---
 
-ATLAS is a comprehensive AI training automation system designed for phishing
-email detection and general text classification tasks. It provides both 
-command-line interface and web-based dashboard for managing machine learning 
-workflows with advanced task scheduling and resource management capabilities.
+## About ATLAS
 
-Key Features:
-- Real-time phishing email classification with confidence scoring
-- Automated model training with synthetic data generation
-- Priority-based task scheduling with resource monitoring
-- Interactive web dashboard for system management
-- Model import/export and version control
-- Performance analytics and visualization
+ATLAS is a modern AI system for phishing email detection. Built with Python, it combines machine learning with an intuitive web interface to help organizations protect themselves from email-based threats.
 
-================================================================================
-SYSTEM REQUIREMENTS
-================================================================================
+**Core Mission**: Automate the detection and classification of phishing emails using advanced natural language processing and machine learning techniques.
 
-Hardware Requirements:
-- CPU: Multi-core processor (4+ cores recommended)
-- RAM: 8GB minimum (16GB recommended for training)
-- Storage: 2GB free space for models and data
-- GPU: CUDA-compatible GPU recommended (optional)
+## Key Features
 
-Software Requirements:
-- Python 3.8 or higher
-- pip package manager
-- Internet connection (for initial model downloads)
+- **Real-time Classification**: Instant phishing detection with confidence scores
+- **Automated Training**: Self-improving models with synthetic data generation  
+- **Web Dashboard**: Clean, modern interface for system management
+- **Task Management**: Priority-based scheduling with resource monitoring
+- **Model Flexibility**: Import, export, and version control for trained models
 
-Supported Operating Systems:
-- Windows 10/11
-- macOS 10.14+
-- Linux (Ubuntu 18.04+, CentOS 7+)
+## System Requirements
 
-================================================================================
-INSTALLATION
-================================================================================
+**Minimum Setup**:
+- Python 3.8+
+- 8GB RAM  
+- 2GB storage
+- Multi-core CPU
 
-1. Download or clone all ATLAS system files to a directory
-2. Install Python dependencies:
-   
-   pip install torch>=1.9.0
-   pip install sentence-transformers>=2.2.0
-   pip install streamlit>=1.28.0
-   pip install pandas>=1.5.0
-   pip install numpy>=1.21.0
-   pip install scikit-learn>=1.0.0
-   pip install plotly>=5.15.0
-   pip install nltk>=3.6.0
-   pip install schedule>=1.1.0
+**Recommended Setup**:
+- Python 3.9+
+- 16GB RAM
+- CUDA-compatible GPU
+- SSD storage
 
-3. Initialize the system:
-   
-   python run_agent.py --mode init
+## Installation
 
-4. Run system tests:
-   
-   python test_atlas.py
+### Quick Setup
+```bash
+# Install dependencies
+pip install torch sentence-transformers streamlit pandas numpy scikit-learn plotly nltk schedule
 
-================================================================================
-QUICK START GUIDE
-================================================================================
-
-Basic Testing:
---------------
-# Test all system components
-python test_atlas.py
-
-# Quick functionality check
-python run_agent.py --mode test
-
-Command Line Usage:
--------------------
-# Basic inference demonstration
-python run_agent.py --mode basic
-
-# Training demonstration
-python run_agent.py --mode training
-
-# Initialize system directories and sample data
+# Initialize system
 python run_agent.py --mode init
 
-Web Dashboard:
---------------
-# Launch interactive web interface
+# Run tests
+python test_atlas.py
+```
+
+### Verify Installation
+```bash
+# Test core functionality
+python run_agent.py --mode test
+
+# Launch web interface
 python run_streamlit.py
+```
 
-# Access dashboard at: http://localhost:8501
+## Usage
 
-Original Research Pipeline:
----------------------------
-# Run complete original preprocessing pipeline
-python preprocess_phishing_data.py
+### Command Line Interface
 
-# Test simplified data preprocessor
-python simple_data_preprocessor.py
+**Basic Operations**:
+```bash
+python run_agent.py --mode basic      # Demo inference
+python run_agent.py --mode training   # Demo training  
+python run_agent.py --mode init       # Setup system
+```
 
-================================================================================
-SYSTEM ARCHITECTURE
-================================================================================
+**Advanced Usage**:
+```bash
+python run_agent.py --config custom.json --log-level DEBUG
+```
 
-Core Components:
-----------------
-ai_training_agent.py      - Main system orchestrator
-inference_engine.py       - Real-time inference processing
-model_manager.py          - Model lifecycle management
-training_engine.py        - Training pipeline execution
-task_scheduler.py         - Task scheduling and resource management
+### Web Dashboard
 
-User Interfaces:
-----------------
-run_agent.py              - Command-line interface
-run_streamlit.py          - Web dashboard launcher
-streamlit_dashboard.py    - Complete web management interface
+Launch with `python run_streamlit.py` and navigate to `http://localhost:8501`
 
-Original Research Code:
------------------------
-preprocess_phishing_data.py    - Complete original pipeline
-simple_data_preprocessor.py    - Modularized preprocessing
+**Main Sections**:
+- **Overview**: System status and real-time metrics
+- **Inference**: Submit emails for classification
+- **Training**: Create and train custom models
+- **Analytics**: Performance charts and model comparison
+- **Models**: Import/export and manage trained models
+- **Settings**: System configuration and maintenance
 
-Testing and Documentation:
----------------------------
-test_atlas.py             - System validation tests
-README.txt                - This documentation file
+### API Usage
 
-================================================================================
-CONFIGURATION
-================================================================================
-
-Default Configuration (config.json):
--------------------------------------
-{
-  "system": {
-    "model_dir": "./models",
-    "max_concurrent_tasks": 5,
-    "log_level": "INFO"
-  },
-  "training": {
-    "epochs": 3,
-    "batch_size": 16,
-    "learning_rate": 2e-5
-  },
-  "inference": {
-    "batch_size": 32,
-    "threshold": 0.5
-  }
-}
-
-Directory Structure:
---------------------
-atlas/
-├── data/
-│   ├── raw/              - Raw training data files
-│   └── processed/        - Processed datasets
-├── models/
-│   ├── base_models/      - Pre-trained base models
-│   └── trained_models/   - Custom trained models
-├── logs/                 - System and error logs
-└── config/               - Configuration files
-
-================================================================================
-USAGE EXAMPLES
-================================================================================
-
-Command Line Examples:
-----------------------
-
-1. System Initialization:
-   python run_agent.py --mode init
-
-2. Basic Inference Test:
-   python run_agent.py --mode basic
-
-3. Training Demonstration:
-   python run_agent.py --mode training
-
-4. Custom Configuration:
-   python run_agent.py --config my_config.json --log-level DEBUG
-
-Web Dashboard Examples:
------------------------
-
-1. Launch Dashboard:
-   python run_streamlit.py
-
-2. Navigate to System Overview for real-time monitoring
-3. Use Inference Tasks to classify emails in real-time
-4. Access Training Tasks to create and train custom models
-5. View Performance Analysis for training results and metrics
-
-API Usage Examples:
--------------------
-
+```python
 from ai_training_agent import AITrainingAgent
 
-# Initialize agent
-agent = AITrainingAgent(model_dir="./models")
+# Initialize
+agent = AITrainingAgent()
 
-# Perform quick inference
-result = await agent.quick_inference([
-    "Urgent: Verify your account now!",
-    "Meeting scheduled for tomorrow"
-])
+# Classify emails
+emails = ["Urgent: Verify your account!", "Meeting at 2pm today"]
+results = await agent.quick_inference(emails)
 
-# Create training data
-data_path = agent.create_sample_training_data(num_samples=1000)
-
-# Train model
+# Train custom model
+data_path = agent.create_sample_training_data(1000)
 task_id = await agent.train_model_from_data(data_path)
 
-# Get system status
+# Monitor system
 status = agent.get_system_status()
+```
 
-# Shutdown
-agent.shutdown()
+## Configuration
 
-================================================================================
-FEATURES OVERVIEW
-================================================================================
-
-Core Capabilities:
-------------------
-✓ Real-time email classification with confidence scores
-✓ Automated model training with multiple algorithms
-✓ Synthetic training data generation
-✓ Task prioritization (5 levels: CRITICAL to BACKGROUND)
-✓ Resource monitoring (CPU, Memory, GPU, Disk I/O, Network)
-✓ Model import/export and version control
-✓ Performance metrics and visualization
-
-Advanced Features:
-------------------
-✓ Multi-method inference (Zero-shot, Few-shot, Keyword-based)
-✓ Automatic retry and timeout handling
-✓ System backup and restore
-✓ Comprehensive logging and debugging
-✓ Web-based management interface
-✓ Batch processing capabilities
-✓ Custom configuration support
-
-Task Scheduling:
-----------------
-✓ Priority-based queue management
-✓ Resource allocation and monitoring
-✓ Concurrent task execution (configurable limits)
-✓ Task status tracking and reporting
-✓ Automatic cleanup and maintenance
-
-================================================================================
-PERFORMANCE METRICS
-================================================================================
-
-Typical Performance:
---------------------
-- Inference Speed: 100-500 emails/second
-- Training Time: 2-10 minutes for 1000 samples
-- Memory Usage: 2-8GB depending on model size
-- Accuracy: 85-95% on balanced datasets
-- Concurrent Tasks: Up to 20 simultaneous tasks
-
-Resource Utilization:
----------------------
-- CPU: Automatic core allocation based on task requirements
-- Memory: Dynamic allocation with monitoring
-- GPU: Optional CUDA acceleration for training
-- Storage: Automatic cleanup of old tasks and models
-
-Scalability:
-------------
-- Dataset Size: Tested with up to 100,000 samples
-- Model Size: Supports models up to 2GB
-- Concurrent Users: Multiple dashboard sessions supported
-- Task Queue: Unlimited pending tasks with priority ordering
-
-================================================================================
-TROUBLESHOOTING
-================================================================================
-
-Common Issues and Solutions:
-----------------------------
-
-1. Import Errors:
-   Error: "ModuleNotFoundError: No module named 'torch'"
-   Solution: Install dependencies with: pip install -r requirements.txt
-
-2. Memory Issues:
-   Error: "CUDA out of memory" or "MemoryError"
-   Solution: Reduce batch_size in config.json or use CPU-only mode
-
-3. Model Download Issues:
-   Error: "Connection timeout" during first run
-   Solution: Ensure internet connection; models are cached after download
-
-4. Dashboard Won't Start:
-   Error: "streamlit: command not found"
-   Solution: Install Streamlit: pip install streamlit>=1.28.0
-
-5. Port Already in Use:
-   Error: "Port 8501 is already in use"
-   Solution: Use different port: streamlit run streamlit_dashboard.py --server.port 8502
-
-6. Permission Errors:
-   Error: "Permission denied" when creating directories
-   Solution: Run with appropriate permissions or change model_dir location
-
-Debug Mode:
------------
-Enable detailed logging:
-python run_agent.py --log-level DEBUG
-
-Check system logs:
-- Console output for immediate errors
-- logs/atlas_agent.log for detailed system logs
-- Dashboard logs in Streamlit interface
-
-Performance Issues:
--------------------
-1. Slow inference: Reduce batch_size or enable GPU acceleration
-2. Training timeouts: Increase timeout_seconds in task configuration
-3. High memory usage: Limit max_concurrent_tasks in config.json
-4. Disk space issues: Enable auto_cleanup in settings
-
-================================================================================
-API REFERENCE
-================================================================================
-
-Main Classes:
--------------
-
-AITrainingAgent:
-- __init__(model_dir, max_concurrent_tasks)
-- quick_inference(texts, model_name)
-- create_sample_training_data(num_samples)
-- train_model_from_data(data_path, model_config, training_params)
-- get_system_status()
-- shutdown()
-
-TaskScheduler:
-- start()
-- stop(wait_for_completion, timeout)
-- schedule_task(task_payload, task_type, priority, resource_requirements)
-- get_task_status(task_id)
-- cancel_task(task_id)
-
-ModelManager:
-- load_model(model_name)
-- save_model(model, model_name)
-- list_models()
-- model_exists(model_name)
-
-InferenceEngine:
-- process_inference(request)
-- batch_inference(text_list, model_name, batch_size)
-
-TrainingEngine:
-- process_training(request)
-- get_training_statistics(df)
-
-Task Priority Levels:
----------------------
-CRITICAL = 1    # System recovery tasks
-HIGH = 2        # Real-time inference
-NORMAL = 3      # Regular training
-LOW = 4         # Data cleanup
-BACKGROUND = 5  # Log compression
-
-Task Status Values:
--------------------
-PENDING     # Waiting in queue
-SCHEDULED   # Scheduled for execution
-RUNNING     # Currently executing
-PAUSED      # Temporarily paused
-COMPLETED   # Successfully finished
-FAILED      # Execution failed
-CANCELLED   # Manually cancelled
-TIMEOUT     # Execution timed out
-
-================================================================================
-DATA FORMATS
-================================================================================
-
-Training Data CSV Format:
--------------------------
-Required columns:
-- "Email Text": The email content to classify
-- "Email Type": Either "Safe Email" or "Phishing Email"
-
-Example:
-Email Text,Email Type
-"Hi team, meeting at 2pm","Safe Email"
-"URGENT: Verify account now!","Phishing Email"
-
-Configuration File Format (JSON):
-----------------------------------
+**Basic Configuration** (`config.json`):
+```json
 {
   "system": {
     "model_dir": "./models",
@@ -411,179 +116,207 @@ Configuration File Format (JSON):
   },
   "training": {
     "epochs": 3,
-    "batch_size": 16,
-    "learning_rate": 2e-5
-  },
-  "inference": {
-    "batch_size": 32,
-    "threshold": 0.5
+    "batch_size": 16
   }
 }
+```
 
-Inference Results Format:
--------------------------
+**Directory Structure**:
+```
+atlas/
+├── data/          # Training datasets
+├── models/        # AI models
+├── logs/          # System logs
+└── config/        # Configuration files
+```
+
+## Performance
+
+**Typical Metrics**:
+- Inference: 100-500 emails/second
+- Training: 2-10 minutes per 1000 samples  
+- Accuracy: 85-95% on balanced datasets
+- Memory: 2-8GB depending on model size
+
+**Scalability**:
+- Single machine: 10K emails/day
+- Server setup: 100K emails/day
+- GPU acceleration: 1M+ emails/day
+
+## File Overview
+
+**Core System** (7 files):
+- `ai_training_agent.py` - Main orchestrator
+- `inference_engine.py` - Real-time classification
+- `model_manager.py` - Model lifecycle management  
+- `training_engine.py` - Training pipeline
+- `task_scheduler.py` - Task and resource management
+- `run_agent.py` - Command line interface
+- `run_streamlit.py` - Web launcher
+
+**Web Interface** (1 file):
+- `streamlit_dashboard.py` - Complete web management
+
+**Research Code** (2 files):
+- `preprocess_phishing_data.py` - Original research pipeline
+- `simple_data_preprocessor.py` - Modular data processing
+
+**Testing** (1 file):
+- `test_atlas.py` - System validation
+
+## Troubleshooting
+
+**Common Issues**:
+
+*Import errors*:
+```bash
+pip install -r requirements.txt
+```
+
+*Memory issues*:
+- Reduce batch_size in config.json
+- Limit max_concurrent_tasks
+
+*Dashboard won't start*:
+```bash
+pip install streamlit
+streamlit run streamlit_dashboard.py --server.port 8502
+```
+
+*Model download fails*:
+- Check internet connection
+- Models cache after first download
+
+**Debug Mode**:
+```bash
+python run_agent.py --log-level DEBUG
+```
+
+**Log Locations**:
+- Console output for immediate issues
+- `logs/atlas_agent.log` for detailed system logs
+- Dashboard interface for task-specific logs
+
+## Data Format
+
+**Training CSV Structure**:
+```csv
+Email Text,Email Type
+"Hi team, meeting at 2pm","Safe Email"
+"URGENT: Verify now!","Phishing Email"
+```
+
+**Classification Results**:
+```json
 {
-  "predictions": [0, 1, 0],  # 0=Safe, 1=Phishing
-  "confidences": [0.23, 0.87, 0.31],
-  "text_data": ["Email 1", "Email 2", "Email 3"],
-  "model_used": "all-MiniLM-L6-v2",
-  "threshold_used": 0.5
+  "predictions": [0, 1],
+  "confidences": [0.23, 0.87],
+  "text_data": ["Email 1", "Email 2"]
 }
+```
 
-================================================================================
-ADVANCED USAGE
-================================================================================
+## Advanced Features
 
-Custom Model Training:
-----------------------
-1. Prepare training data in CSV format
-2. Use web dashboard Training Tasks page
-3. Configure training parameters:
-   - Epochs: Number of training iterations
-   - Batch Size: Samples processed simultaneously
-   - Learning Rate: Training step size
-   - Base Model: Foundation model to fine-tune
+**Multiple Inference Methods**:
+- Zero-shot: Semantic understanding
+- Few-shot: Reference-based comparison  
+- Keyword: Pattern matching
+- Similarity: Embedding-based classification
 
-Resource Management:
---------------------
-Configure in system settings:
-- max_concurrent_tasks: Maximum parallel tasks
-- Resource monitoring: Enable/disable resource tracking
-- Auto cleanup: Automatic old task removal
+**Task Priorities**:
+- CRITICAL: System recovery
+- HIGH: Real-time inference
+- NORMAL: Regular training
+- LOW: Data cleanup
+- BACKGROUND: Maintenance
 
-Custom Inference Methods:
--------------------------
-- Zero-shot: Uses semantic understanding without training examples
-- Few-shot: Uses reference examples for comparison
-- Keyword-based: Uses predefined phishing keywords
-- Standard: Default similarity-based classification
+**Resource Management**:
+- Automatic CPU/memory allocation
+- GPU utilization monitoring
+- Task queue optimization
+- Resource usage visualization
 
-Batch Processing:
------------------
-For large datasets:
-1. Use command line: python run_agent.py --mode basic
-2. Or web dashboard: Upload CSV in Inference Tasks
-3. Monitor progress in System Overview
-4. Export results from Performance Analysis
+## Deployment
 
-Model Management:
------------------
-- Import: Add external trained models
-- Export: Save trained models for deployment
-- Version: Track model performance over time
-- Cleanup: Remove unused models automatically
+**Production Considerations**:
+- Use dedicated server with sufficient resources
+- Configure security settings appropriately
+- Set up monitoring and alerting
+- Enable automatic backups
+- Use reverse proxy for web access
 
-================================================================================
-DEPLOYMENT CONSIDERATIONS
-================================================================================
+**Scaling Options**:
+- Vertical: Increase server resources
+- Horizontal: Distribute across multiple machines
+- Cloud: Deploy to AWS/Azure/GCP
+- Container: Use Docker for portability
 
-Production Deployment:
-----------------------
-1. Use dedicated server with sufficient resources
-2. Configure appropriate security settings
-3. Set up monitoring and logging
-4. Enable automatic backups
-5. Use reverse proxy for web dashboard
+## Contributing
 
-Security Considerations:
-------------------------
-- Run with minimal required permissions
-- Secure web dashboard with authentication
-- Monitor resource usage for potential attacks
-- Regularly update dependencies
-- Backup system state periodically
-
-Scaling Recommendations:
-------------------------
-- Single Machine: Up to 10,000 emails/day
-- Multi-core Server: Up to 100,000 emails/day  
-- GPU Acceleration: Up to 1,000,000 emails/day
-- Distributed Setup: Unlimited with proper infrastructure
-
-Monitoring and Maintenance:
----------------------------
-- Check logs regularly for errors
-- Monitor resource utilization
-- Update models periodically
-- Clean old training data
-- Backup system configuration
-
-================================================================================
-SUPPORT AND COMMUNITY
-================================================================================
-
-Getting Help:
--------------
-1. Check this README.txt for common issues
-2. Review system logs for error messages
-3. Test with sample data to isolate problems
-4. Use debug mode for detailed information
-
-Documentation:
---------------
-- README.txt: This comprehensive guide
-- Inline code comments: Detailed technical documentation
-- Web dashboard help: Context-sensitive assistance
-- API docstrings: Function-level documentation
-
-Best Practices:
----------------
-1. Always test with small datasets first
-2. Monitor resource usage during training
-3. Use appropriate batch sizes for your hardware
-4. Backup important models and data
-5. Keep system dependencies updated
-
-Contributing:
--------------
-To contribute improvements:
-1. Document any changes clearly
-2. Test thoroughly before deployment
-3. Follow existing code style
-4. Add appropriate error handling
+**Development Setup**:
+1. Clone/download system files
+2. Install development dependencies
+3. Run tests: `python test_atlas.py`
+4. Make changes and test thoroughly
 5. Update documentation as needed
 
-================================================================================
-LICENSE AND LEGAL
-================================================================================
+**Code Standards**:
+- Clear, commented code
+- Error handling for edge cases
+- Consistent naming conventions
+- Comprehensive testing
 
-MIT License
+## Support
 
-Copyright (c) 2025 ATLAS Development Team
+**Getting Help**:
+1. Check this documentation first
+2. Review system logs for errors
+3. Test with sample data
+4. Use debug mode for detailed output
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
+**Self-Diagnosis**:
+- Run `python test_atlas.py` for system health
+- Check `logs/atlas_agent.log` for detailed errors
+- Monitor resource usage in web dashboard
+- Verify configuration in `config.json`
 
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
+## License
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+MIT License - Free to use, modify, and distribute.
 
-================================================================================
-VERSION HISTORY
-================================================================================
+Full license text available in source files.
 
-Version 1.0.0 (August 2025):
-- Initial release
-- Complete ATLAS system implementation
-- Web dashboard with full functionality
-- Task scheduling and resource management
-- Original research pipeline integration
-- Comprehensive documentation
+## Technical Details
 
-Future Versions:
-- Multi-language support
-- Advanced model architectures
-- Cloud deployment options
-- Enhanced visualization
-- REST API interface
+**Dependencies**:
+- PyTorch: Deep learning framework
+- Sentence Transformers: Text embeddings
+- Streamlit: Web interface
+- Scikit-learn: ML utilities
+- Pandas/NumPy: Data processing
+- Plotly: Visualizations
+
+**Architecture**:
+- Modular design with clear separation of concerns
+- Asynchronous processing for scalability  
+- Resource-aware task scheduling
+- Comprehensive logging and monitoring
+- RESTful internal APIs
+
+**Security**:
+- No external network calls during inference
+- Local model storage and processing
+- Configurable logging levels
+- Resource usage limits
+- Input validation and sanitization
+
+---
+
+*Built by the ATLAS Development Team*  
+*Making email security accessible to everyone*
+
+**Quick Links**:
+- Start Here: `python run_agent.py --mode init`
+- Web Interface: `python run_streamlit.py` 
+- Full Test: `python test_atlas.py`
+- Original Pipeline: `python preprocess_phishing_data.py`
