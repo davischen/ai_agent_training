@@ -20,7 +20,17 @@ from core.training_engine import TrainingEngine, TrainingRequest, DataGenerator
 from core.task_scheduler import TaskScheduler, TaskPriority, ResourceRequirement
 
 logger = logging.getLogger(__name__)
-
+# 修正後的導入
+try:
+    from pii_recognition.pii_trainer import create_pii_trainer, quick_train_pii
+    PII_AVAILABLE = True
+except ImportError:
+    PII_AVAILABLE = False
+    # 創建 mock 函數避免錯誤
+    def create_pii_trainer(*args, **kwargs):
+        raise ImportError("PII recognition module not available")
+    def quick_train_pii(*args, **kwargs):
+        raise ImportError("PII recognition module not available")
 class AITrainingAgent:
     """Main AI Training Agent that orchestrates all components"""
     
